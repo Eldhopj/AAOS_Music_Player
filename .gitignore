@@ -1,0 +1,15 @@
+# Project exclude paths
+/.gradle/
+/app/build/
+/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/
+/build/
+/core-ui/build/
+/data/build/
+/data/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/
+/domain/build/
+/domain/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/
+/feature-player/build/
+/feature-player/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/
+/service-media/build/
+/service-media/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/
+/.idea/
