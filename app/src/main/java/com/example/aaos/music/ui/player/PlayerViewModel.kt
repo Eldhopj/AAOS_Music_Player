@@ -41,6 +41,41 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    fun handleEvent(event: PlayerEvent) {
+        viewModelScope.launch {
+            when (event) {
+                PlayerEvent.PlayPauseClicked -> togglePlayPause()
+                PlayerEvent.SkipNextClicked -> sendPlayerIntentUseCase(PlayerIntent.SkipNext)
+                PlayerEvent.SkipPrevClicked -> sendPlayerIntentUseCase(PlayerIntent.SkipPrev)
+                is PlayerEvent.SeekTo -> sendPlayerIntentUseCase(PlayerIntent.SeekTo(event.position))
+                is PlayerEvent.PlayByIndex -> sendPlayerIntentUseCase(PlayerIntent.PlayByIndex(event.index))
+                PlayerEvent.ToggleShuffle -> toggleShuffle()
+                PlayerEvent.CycleRepeat -> cycleRepeat()
+            }
+        }
+    }
+
+    private fun toggleShuffle() {
+        viewModelScope.launch {
+            val isShuffle = _state.value.isShuffleEnabled
+            sendPlayerIntentUseCase(PlayerIntent.SetShuffle(!isShuffle))
+        }
+    }
+
+    private fun cycleRepeat() {
+        viewModelScope.launch {
+            // Repeat modes: 0 = OFF, 1 = ONE, 2 = ALL (Media3 constants)
+            // Cycle: OFF -> ALL -> ONE -> OFF
+            val currentMode = _state.value.repeatMode
+            val newMode = when (currentMode) {
+                0 -> 2 // OFF -> ALL
+                2 -> 1 // ALL -> ONE
+                else -> 0 // ONE -> OFF
+            }
+            sendPlayerIntentUseCase(PlayerIntent.SetRepeat(newMode))
+        }
+    }
+
     private fun observePlayerState() {
         viewModelScope.launch {
             playerRepository.currentTrack.collect { track ->
@@ -57,16 +92,14 @@ class PlayerViewModel @Inject constructor(
                 _state.update { it.copy(playbackPosition = position) }
             }
         }
-    }
-
-    fun handleEvent(event: PlayerEvent) {
         viewModelScope.launch {
-            when (event) {
-                PlayerEvent.PlayPauseClicked -> togglePlayPause()
-                PlayerEvent.SkipNextClicked -> sendPlayerIntentUseCase(PlayerIntent.SkipNext)
-                PlayerEvent.SkipPrevClicked -> sendPlayerIntentUseCase(PlayerIntent.SkipPrev)
-                is PlayerEvent.SeekTo -> sendPlayerIntentUseCase(PlayerIntent.SeekTo(event.position))
-                is PlayerEvent.PlayByIndex -> sendPlayerIntentUseCase(PlayerIntent.PlayByIndex(event.index))
+            playerRepository.shuffleModeEnabled.collect { enabled ->
+                _state.update { it.copy(isShuffleEnabled = enabled) }
+            }
+        }
+        viewModelScope.launch {
+            playerRepository.repeatMode.collect { mode ->
+                _state.update { it.copy(repeatMode = mode) }
             }
         }
     }

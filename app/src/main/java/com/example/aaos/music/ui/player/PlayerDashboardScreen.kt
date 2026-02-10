@@ -143,11 +143,13 @@ fun PlayerDashboardContent(
 
                 PlayerControls(
                     isPlaying = state.isPlaying,
+                    isShuffleEnabled = state.isShuffleEnabled,
+                    repeatMode = state.repeatMode,
                     onPlayPauseClick = { onEvent(PlayerEvent.PlayPauseClicked) },
                     onPreviousClick = { onEvent(PlayerEvent.SkipPrevClicked) },
                     onNextClick = { onEvent(PlayerEvent.SkipNextClicked) },
-                    onShuffleClick = { /* TODO */ }, // Placeholder
-                    onRepeatClick = { /* TODO */ },  // Placeholder
+                    onShuffleClick = { onEvent(PlayerEvent.ToggleShuffle) },
+                    onRepeatClick = { onEvent(PlayerEvent.CycleRepeat) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }

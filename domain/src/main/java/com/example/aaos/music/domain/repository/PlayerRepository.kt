@@ -14,6 +14,8 @@ interface PlayerRepository {
     val currentTrack: Flow<Track?>
     val isPlaying: Flow<Boolean>
     val playbackPosition: Flow<Long>
+    val shuffleModeEnabled: Flow<Boolean>
+    val repeatMode: Flow<Int>
     
     suspend fun play()
     suspend fun pause()
@@ -21,5 +23,7 @@ interface PlayerRepository {
     suspend fun skipPrevious()
     suspend fun seekTo(position: Long)
     suspend fun playByIndex(index: Int)
+    suspend fun setShuffleMode(enabled: Boolean)
+    suspend fun setRepeatMode(mode: Int)
     suspend fun setMediaItems(songs: List<com.example.aaos.music.domain.model.LocalSong>)
 }

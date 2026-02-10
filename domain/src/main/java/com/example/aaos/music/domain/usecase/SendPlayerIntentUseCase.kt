@@ -10,6 +10,8 @@ sealed class PlayerIntent {
     object SkipPrev : PlayerIntent()
     data class SeekTo(val position: Long) : PlayerIntent()
     data class PlayByIndex(val index: Int) : PlayerIntent()
+    data class SetShuffle(val enabled: Boolean) : PlayerIntent()
+    data class SetRepeat(val mode: Int) : PlayerIntent()
 }
 
 class SendPlayerIntentUseCase @Inject constructor(
@@ -23,6 +25,8 @@ class SendPlayerIntentUseCase @Inject constructor(
             PlayerIntent.SkipPrev -> repository.skipPrevious()
             is PlayerIntent.SeekTo -> repository.seekTo(intent.position)
             is PlayerIntent.PlayByIndex -> repository.playByIndex(intent.index)
+            is PlayerIntent.SetShuffle -> repository.setShuffleMode(intent.enabled)
+            is PlayerIntent.SetRepeat -> repository.setRepeatMode(intent.mode)
         }
     }
 }

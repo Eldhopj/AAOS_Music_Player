@@ -18,6 +18,8 @@ import com.example.aaos.music.core.ui.components.buttons.PlayPauseButton
 @Composable
 fun PlayerControls(
     isPlaying: Boolean,
+    isShuffleEnabled: Boolean,
+    repeatMode: Int,
     onPlayPauseClick: () -> Unit,
     onPreviousClick: () -> Unit,
     onNextClick: () -> Unit,
@@ -31,11 +33,12 @@ fun PlayerControls(
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Shuffle
+        val shuffleTint = if (isShuffleEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
         IconButton(onClick = onShuffleClick) {
             Icon(
                 painter = painterResource(id = R.drawable.shuffle),
                 contentDescription = "Shuffle",
-                tint = MaterialTheme.colorScheme.onSurface,
+                tint = shuffleTint,
                 modifier = Modifier.size(24.dp)
             )
         }
@@ -74,11 +77,13 @@ fun PlayerControls(
         }
 
         // Repeat
+        // 0 = Off, 1 = One, 2 = All
+        val repeatTint = if (repeatMode != 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
         IconButton(onClick = onRepeatClick) {
             Icon(
                 painter = painterResource(id = R.drawable.repeat),
                 contentDescription = "Repeat",
-                tint = MaterialTheme.colorScheme.onSurface,
+                tint = repeatTint,
                 modifier = Modifier.size(24.dp)
             )
         }

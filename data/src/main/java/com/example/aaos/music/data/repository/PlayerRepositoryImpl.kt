@@ -64,6 +64,30 @@ class PlayerRepositoryImpl @Inject constructor(
         awaitClose { controller.removeListener(listener) }
     }
 
+    override val shuffleModeEnabled: Flow<Boolean> = callbackFlow {
+        val listener = object : Player.Listener {
+            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
+                trySend(shuffleModeEnabled)
+            }
+        }
+        val controller = getController()
+        controller.addListener(listener)
+        trySend(controller.shuffleModeEnabled)
+        awaitClose { controller.removeListener(listener) }
+    }
+
+    override val repeatMode: Flow<Int> = callbackFlow {
+        val listener = object : Player.Listener {
+            override fun onRepeatModeChanged(repeatMode: Int) {
+                trySend(repeatMode)
+            }
+        }
+        val controller = getController()
+        controller.addListener(listener)
+        trySend(controller.repeatMode)
+        awaitClose { controller.removeListener(listener) }
+    }
+
     override val playbackPosition: Flow<Long> = callbackFlow {
         val controller = getController()
         val listener = object : Player.Listener {
@@ -126,6 +150,14 @@ class PlayerRepositoryImpl @Inject constructor(
         val controller = getController()
         controller.seekToDefaultPosition(index)
         controller.play()
+    }
+
+    override suspend fun setShuffleMode(enabled: Boolean) {
+        getController().shuffleModeEnabled = enabled
+    }
+
+    override suspend fun setRepeatMode(mode: Int) {
+        getController().repeatMode = mode
     }
 
     override suspend fun setMediaItems(songs: List<com.example.aaos.music.domain.model.LocalSong>) {
