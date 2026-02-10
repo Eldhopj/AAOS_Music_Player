@@ -9,6 +9,7 @@ sealed class PlayerIntent {
     object SkipNext : PlayerIntent()
     object SkipPrev : PlayerIntent()
     data class SeekTo(val position: Long) : PlayerIntent()
+    data class PlayByIndex(val index: Int) : PlayerIntent()
 }
 
 class SendPlayerIntentUseCase @Inject constructor(
@@ -21,6 +22,7 @@ class SendPlayerIntentUseCase @Inject constructor(
             PlayerIntent.SkipNext -> repository.skipNext()
             PlayerIntent.SkipPrev -> repository.skipPrevious()
             is PlayerIntent.SeekTo -> repository.seekTo(intent.position)
+            is PlayerIntent.PlayByIndex -> repository.playByIndex(intent.index)
         }
     }
 }

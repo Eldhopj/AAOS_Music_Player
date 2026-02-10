@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.activity.compose)
     implementation(platform(libs.compose.bom))
+    implementation("androidx.compose.foundation:foundation")
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)

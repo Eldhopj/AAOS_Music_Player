@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.aaos.music.core.ui.theme.CarMusicTheme
-import com.example.aaos.music.ui.player.PlayerScreen
+import com.example.aaos.music.ui.player.PlayerDashboardScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -45,10 +45,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     PermissionWrapper {
-                         // PlayerScreen will handle ViewModel and Music Loading internally
-                         PlayerScreen(
-                             isLhd = true // In real app, check resources/config
-                         )
+                         // PlayerDashboardScreen handles ViewModel and Music Loading internally
+                         PlayerDashboardScreen()
                     }
                 }
             }

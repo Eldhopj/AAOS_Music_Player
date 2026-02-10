@@ -20,5 +20,6 @@ interface PlayerRepository {
     suspend fun skipNext()
     suspend fun skipPrevious()
     suspend fun seekTo(position: Long)
+    suspend fun playByIndex(index: Int)
     suspend fun setMediaItems(songs: List<com.example.aaos.music.domain.model.LocalSong>)
 }

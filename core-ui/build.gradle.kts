@@ -40,4 +40,5 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.roborazzi.compose)
     testImplementation(libs.roborazzi.junit.rule)
+    implementation(libs.coil.compose)
 }

@@ -17,4 +17,5 @@ sealed class PlayerEvent {
     object SkipNextClicked : PlayerEvent()
     object SkipPrevClicked : PlayerEvent()
     data class SeekTo(val position: Long) : PlayerEvent()
+    data class PlayByIndex(val index: Int) : PlayerEvent()
 }

@@ -122,6 +122,12 @@ class PlayerRepositoryImpl @Inject constructor(
         getController().seekTo(position)
     }
 
+    override suspend fun playByIndex(index: Int) {
+        val controller = getController()
+        controller.seekToDefaultPosition(index)
+        controller.play()
+    }
+
     override suspend fun setMediaItems(songs: List<com.example.aaos.music.domain.model.LocalSong>) {
         val mediaItems = songs.map { song ->
             val extras = android.os.Bundle().apply {

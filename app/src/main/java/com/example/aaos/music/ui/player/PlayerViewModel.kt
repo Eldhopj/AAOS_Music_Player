@@ -66,6 +66,7 @@ class PlayerViewModel @Inject constructor(
                 PlayerEvent.SkipNextClicked -> sendPlayerIntentUseCase(PlayerIntent.SkipNext)
                 PlayerEvent.SkipPrevClicked -> sendPlayerIntentUseCase(PlayerIntent.SkipPrev)
                 is PlayerEvent.SeekTo -> sendPlayerIntentUseCase(PlayerIntent.SeekTo(event.position))
+                is PlayerEvent.PlayByIndex -> sendPlayerIntentUseCase(PlayerIntent.PlayByIndex(event.index))
             }
         }
     }
