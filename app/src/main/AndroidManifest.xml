@@ -12,11 +12,13 @@
         android:icon="@drawable/media3_icon_circular_play"
         android:label="AAOS Music"
         android:roundIcon="@drawable/media3_icon_circular_play"
+        android:theme="@style/Theme.AppCompat.NoActionBar"
         android:supportsRtl="true">
-        
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
