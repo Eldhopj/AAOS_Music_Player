@@ -35,6 +35,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.aaos.music.core.ui.components.album.AlbumArt
 import com.example.aaos.music.core.ui.components.sliders.MusicProgressBar
 import com.example.aaos.music.core.ui.theme.CarMusicTheme
+import com.example.aaos.music.core.ui.theme.GradientEnd
+import com.example.aaos.music.core.ui.theme.GradientStart
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.res.painterResource
+import com.example.aaos.music.core.ui.R
+import com.example.aaos.music.core.ui.components.buttons.OutlinedMediaButton
 import com.example.aaos.music.ui.player.components.PlayerControls
 import com.example.aaos.music.ui.player.components.QueueList
 import com.example.aaos.music.ui.player.components.SongInfo
@@ -63,7 +70,7 @@ fun PlayerDashboardContent(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(Color.Transparent)
     ) {
         // LEFT PANE (60%)
         Column(
@@ -73,13 +80,27 @@ fun PlayerDashboardContent(
                 .padding(32.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Top Section (Header / Status) - dynamic based on design, simplified here
+            // Top Section (Header / Status)
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.End, // Align to Right
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                 // Placeholder for USB/Source indicators if needed
-                 Spacer(modifier = Modifier.size(1.dp))
+                 OutlinedMediaButton(
+                     text = "USB",
+                     iconResId = R.drawable.usb,
+                     onClick = { /* Handle Source Click */ }
+                 )
+                 
+                 Spacer(modifier = Modifier.width(16.dp))
+
+                 IconButton(onClick = { /* Handle Minimize */ }) {
+                     Icon(
+                         painter = painterResource(id = R.drawable.minimise),
+                         contentDescription = "Minimize",
+                         tint = MaterialTheme.colorScheme.onSurface
+                     )
+                 }
             }
 
             // Main Content: Album Art + Info
@@ -176,7 +197,7 @@ fun PlayerDashboardContent(
             modifier = Modifier
                 .weight(0.4f)
                 .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)) // Slightly different bg for pane
+                .background(Color.Transparent)
         ) {
             QueueList(
                 queue = state.queue,

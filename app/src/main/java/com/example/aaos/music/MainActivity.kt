@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,11 +27,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.aaos.music.core.ui.theme.CarMusicTheme
+import com.example.aaos.music.core.ui.theme.GradientEnd
+import com.example.aaos.music.core.ui.theme.GradientStart
 import com.example.aaos.music.ui.player.PlayerDashboardScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,8 +48,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PermissionWrapper {
-                         PlayerDashboardScreen()
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(GradientStart, GradientEnd)
+                                )
+                            )
+                    ) {
+                        PermissionWrapper {
+                            PlayerDashboardScreen()
+                        }
                     }
                 }
             }
@@ -64,7 +78,10 @@ fun PermissionWrapper(onPermissionGranted: @Composable () -> Unit) {
 
     var hasPermission by remember {
         mutableStateOf(
-            ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                context,
+                permission
+            ) == PackageManager.PERMISSION_GRANTED
         )
     }
 

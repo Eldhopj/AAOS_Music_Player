@@ -3,11 +3,15 @@ package com.example.aaos.music.core.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Dark Theme Colors
-val DarkBackground = Color(0xFF0F111A)
-val DarkSurface = Color(0xFF1E212B) // Slightly lighter for cards/lists if needed
+val GradientStart = Color(0xFF2F374C)
+val GradientEnd = Color(0xFF000000)
+val DarkBackground = GradientEnd // Fallback to black
+val DarkSurface = Color(0x80000000) // Semi-transparent black for surface
 val DarkOnBackground = Color(0xFFFFFFFF)
-val DarkPrimary = Color(0xFF00E5FF) // Cyan/Blue accent
-val DarkOnPrimary = Color(0xFF000000)
+val DarkSurfaceVariant = Color(0xFF2F374C) // Matches GradientStart
+val DarkOnSurfaceVariant = Color(0xFFC4C7D0) // Light grey for text on variant
+val DarkPrimary = Color(0xFFFFFFFF) // White as per design
+val DarkOnPrimary = Color(0xFF000000) // Black icon on white primary
 val DarkSecondary = Color(0xFFB0BEC5) // Valid secondary for dark mode
 
 // Light Theme Colors
