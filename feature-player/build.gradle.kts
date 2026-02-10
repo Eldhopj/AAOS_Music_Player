@@ -42,6 +42,8 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
     implementation(libs.hilt.android)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.compose)
     implementation(libs.lifecycle.viewmodel.ktx)
     ksp(libs.hilt.compiler)
     

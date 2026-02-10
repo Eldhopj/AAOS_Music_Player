@@ -9,12 +9,13 @@ import androidx.media3.session.SessionToken
 import com.example.aaos.music.domain.repository.PlayerRepository
 import com.example.aaos.music.domain.repository.Track
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.guava.await
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -64,11 +65,41 @@ class PlayerRepositoryImpl @Inject constructor(
     }
 
     override val playbackPosition: Flow<Long> = callbackFlow {
-        // Polling loop or periodic update would be better for position
-        // For simplicity here, we just emit 0 or start/events
-        // In prod, use a ticker flow combined with current position check
-        trySend(0L) 
-        awaitClose { }
+        val controller = getController()
+        val listener = object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                if (isPlaying) {
+                    trySend(controller.currentPosition)
+                }
+            }
+            override fun onPositionDiscontinuity(
+                oldPosition: Player.PositionInfo,
+                newPosition: Player.PositionInfo,
+                reason: Int
+            ) {
+                trySend(newPosition.positionMs)
+            }
+        }
+        
+        controller.addListener(listener)
+        
+        // Initial position
+        trySend(controller.currentPosition)
+        
+        // Polling for progress
+        val pollJob = launch {
+            while (true) {
+                if (controller.isPlaying) {
+                    trySend(controller.currentPosition)
+                }
+                delay(100L) // Update every 100ms
+            }
+        }
+        
+        awaitClose { 
+            controller.removeListener(listener)
+            pollJob.cancel()
+        }
     }
 
     override suspend fun play() {
@@ -91,12 +122,39 @@ class PlayerRepositoryImpl @Inject constructor(
         getController().seekTo(position)
     }
 
+    override suspend fun setMediaItems(songs: List<com.example.aaos.music.domain.model.LocalSong>) {
+        val mediaItems = songs.map { song ->
+            val extras = android.os.Bundle().apply {
+                putLong("duration", song.duration)
+            }
+
+            val metadata = androidx.media3.common.MediaMetadata.Builder()
+                .setTitle(song.title)
+                .setArtist(song.artist)
+                .setAlbumTitle(song.album)
+                .setArtworkUri(android.net.Uri.parse(song.albumArtUri ?: ""))
+                .setExtras(extras)
+                .build()
+
+            MediaItem.Builder()
+                .setMediaId(song.id.toString())
+                .setUri(song.contentUri)
+                .setMediaMetadata(metadata)
+                .build()
+        }
+        val controller = getController()
+        controller.setMediaItems(mediaItems)
+        controller.prepare()
+    }
+
     private fun MediaItem.toDomainTrack(): Track {
+        val duration = mediaMetadata.extras?.getLong("duration") ?: 0L
         return Track(
             id = mediaId,
             title = mediaMetadata.title?.toString() ?: "Unknown",
             artist = mediaMetadata.artist?.toString() ?: "Unknown",
-            albumArtUrl = mediaMetadata.artworkUri?.toString()
+            albumArtUrl = mediaMetadata.artworkUri?.toString(),
+            duration = duration
         )
     }
 }

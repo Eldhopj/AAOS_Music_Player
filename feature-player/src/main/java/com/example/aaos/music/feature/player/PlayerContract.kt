@@ -1,11 +1,14 @@
 package com.example.aaos.music.feature.player
 
 import com.example.aaos.music.domain.repository.Track
+import com.example.aaos.music.domain.model.LocalSong
 
 data class PlayerState(
     val currentTrack: Track? = null,
     val isPlaying: Boolean = false,
     val playbackPosition: Long = 0L,
+    val queue: List<LocalSong> = emptyList(),
+    val isLoading: Boolean = false,
     val error: String? = null
 )
 

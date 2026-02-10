@@ -4,6 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,36 +29,45 @@ fun FullPlayer(
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (isLhd) {
-            // Driver on Left. Center stack to their right.
-            // Controls should be closer to driver (Left side of screen).
-            // Art on Right.
-            PlayerControlsSection(
-                state = state, 
-                onEvent = onEvent, 
-                modifier = Modifier.weight(1f)
-            )
-            AlbumArtSection(
-                modifier = Modifier.weight(1f)
-            )
+        if (state.isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else if (state.error != null) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Error: ${state.error}", color = MaterialTheme.colorScheme.error)
+            }
         } else {
-            // Driver on Right. Center stack to their left.
-            // Controls should be closer to driver (Right side of screen).
-            // Art on Left.
-            AlbumArtSection(
-                modifier = Modifier.weight(1f)
-            )
-            PlayerControlsSection(
-                state = state, 
-                onEvent = onEvent, 
-                modifier = Modifier.weight(1f)
-            )
+            if (isLhd) {
+                PlayerControlsSection(
+                    state = state, 
+                    onEvent = onEvent, 
+                    modifier = Modifier.weight(1f)
+                )
+                AlbumArtSection(
+                    albumArtUrl = state.currentTrack?.albumArtUrl,
+                    modifier = Modifier.weight(1f)
+                )
+            } else {
+                AlbumArtSection(
+                    albumArtUrl = state.currentTrack?.albumArtUrl,
+                    modifier = Modifier.weight(1f)
+                )
+                PlayerControlsSection(
+                    state = state, 
+                    onEvent = onEvent, 
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
     }
 }
 
 @Composable
-fun AlbumArtSection(modifier: Modifier = Modifier) {
+fun AlbumArtSection(
+    albumArtUrl: String?,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .fillMaxHeight()
@@ -61,7 +75,16 @@ fun AlbumArtSection(modifier: Modifier = Modifier) {
             .background(Color.DarkGray),
         contentAlignment = Alignment.Center
     ) {
-        Text("Album Art", color = Color.White)
+        if (albumArtUrl != null) {
+            coil.compose.AsyncImage(
+                model = albumArtUrl,
+                contentDescription = "Album Art",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop
+            )
+        } else {
+            Text("No Art", color = Color.White)
+        }
     }
 }
 
@@ -88,9 +111,25 @@ fun PlayerControlsSection(
         
         Spacer(modifier = Modifier.height(32.dp))
         
+        val duration = state.currentTrack?.duration ?: 1L
+        
+        var isDragging by remember { mutableStateOf(false) }
+        var sliderValue by remember { mutableFloatStateOf(0f) }
+
+        if (!isDragging) {
+            sliderValue = if (duration > 0) state.playbackPosition.toFloat() / duration.toFloat() else 0f
+        }
+
         Slider(
-            value = 0.3f, 
-            onValueChange = { /* seek event */ },
+            value = sliderValue,
+            onValueChange = { 
+                isDragging = true
+                sliderValue = it
+            },
+            onValueChangeFinished = {
+                isDragging = false
+                onEvent(PlayerEvent.SeekTo((sliderValue * duration).toLong()))
+            },
             modifier = Modifier.fillMaxWidth()
         )
         

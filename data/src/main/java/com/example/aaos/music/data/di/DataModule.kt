@@ -1,5 +1,6 @@
 package com.example.aaos.music.data.di
 
+import com.example.aaos.music.data.repository.LocalSongRepositoryImpl
 import com.example.aaos.music.data.repository.PlayerRepositoryImpl
 import com.example.aaos.music.domain.repository.PlayerRepository
 import dagger.Binds
@@ -17,4 +18,10 @@ abstract class DataModule {
     abstract fun bindPlayerRepository(
         impl: PlayerRepositoryImpl
     ): PlayerRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLocalSongRepository(
+        impl: LocalSongRepositoryImpl
+    ): com.example.aaos.music.domain.repository.LocalSongRepository
 }
