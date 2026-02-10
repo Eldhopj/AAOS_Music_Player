@@ -1,4 +1,4 @@
-package com.example.aaos.music.feature.player
+package com.example.aaos.music.ui.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -16,7 +16,6 @@ dependencyResolutionManagement {
 rootProject.name = "AAOS Music Player"
 include(":app")
 include(":core-ui")
-include(":feature-player")
 include(":domain")
 include(":data")
 include(":service-media")

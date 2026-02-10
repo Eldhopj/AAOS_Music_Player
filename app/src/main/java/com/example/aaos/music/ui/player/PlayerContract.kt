@@ -1,4 +1,4 @@
-package com.example.aaos.music.feature.player
+package com.example.aaos.music.ui.player
 
 import com.example.aaos.music.domain.repository.Track
 import com.example.aaos.music.domain.model.LocalSong

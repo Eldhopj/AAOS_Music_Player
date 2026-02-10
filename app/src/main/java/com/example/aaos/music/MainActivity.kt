@@ -31,8 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.aaos.music.core.ui.theme.CarMusicTheme
-import com.example.aaos.music.feature.player.FullPlayer
-import com.example.aaos.music.feature.player.PlayerViewModel
+import com.example.aaos.music.ui.player.PlayerScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -45,24 +44,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val viewModel: PlayerViewModel = hiltViewModel()
-                    val state by viewModel.state.collectAsState()
-                    
-                    PermissionWrapper(
-                        onPermissionGranted = {
-                            // Once granted, we can load music.
-                            // Ideally, this should be idempotent or checked in ViewModel.
-                            LaunchedEffect(Unit) {
-                                viewModel.loadLocalMusic()
-                            }
-                            
-                            FullPlayer(
-                                state = state,
-                                onEvent = viewModel::handleEvent,
-                                isLhd = true // In real app, check resources/config
-                            )
-                        }
-                    )
+                    PermissionWrapper {
+                         // PlayerScreen will handle ViewModel and Music Loading internally
+                         PlayerScreen(
+                             isLhd = true // In real app, check resources/config
+                         )
+                    }
                 }
             }
         }

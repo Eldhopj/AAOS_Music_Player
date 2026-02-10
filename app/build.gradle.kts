@@ -36,7 +36,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":feature-player"))
     implementation(project(":core-ui"))
     implementation(project(":service-media"))
     implementation(project(":data"))
@@ -44,6 +43,7 @@ dependencies {
     
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.activity.compose)
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
@@ -53,5 +53,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.coil.compose)
     ksp(libs.hilt.compiler)
 }
