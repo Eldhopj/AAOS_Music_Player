@@ -39,6 +39,7 @@ import com.example.aaos.music.core.ui.theme.GradientEnd
 import com.example.aaos.music.core.ui.theme.GradientStart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.res.painterResource
 import com.example.aaos.music.core.ui.R
 import com.example.aaos.music.core.ui.components.buttons.OutlinedMediaButton
@@ -127,7 +128,7 @@ fun PlayerDashboardContent(
             Column(modifier = Modifier.fillMaxWidth()) {
                 val duration = state.currentTrack?.duration ?: 1L
                 val position = state.playbackPosition.coerceAtMost(duration)
-                var sliderPosition by remember(position) { mutableStateOf(position.toFloat()) }
+                var sliderPosition by remember(position) { mutableFloatStateOf(position.toFloat()) }
                 var isDragging by remember { mutableStateOf(false) }
 
                 // Timestamps
