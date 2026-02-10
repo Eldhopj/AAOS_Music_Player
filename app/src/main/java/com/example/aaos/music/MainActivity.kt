@@ -45,7 +45,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     PermissionWrapper {
-                         // PlayerDashboardScreen handles ViewModel and Music Loading internally
                          PlayerDashboardScreen()
                     }
                 }
