@@ -81,27 +81,11 @@ fun QueueList(
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = { /* Handle Back */ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.back),
-                            contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
                     Text(
                         text = "Select Album",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(1f)
-                    )
-
-                    Icon(
-                        imageVector = Icons.Filled.Menu, // Placeholder for Album/Library icon
-                        contentDescription = "Album",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 

@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.aaos.music.core.ui.R
 import com.example.aaos.music.core.ui.components.album.AlbumArt
 import com.example.aaos.music.core.ui.components.animation.slowBoundsTransform
+import com.example.aaos.music.core.ui.components.buttons.OutlinedMediaButton
 import com.example.aaos.music.core.ui.components.sliders.MusicProgressBar
 import com.example.aaos.music.ui.player.components.PlayerControls
 import com.example.aaos.music.ui.player.components.QueueList
@@ -199,32 +202,29 @@ private fun MediaControlPanel(
                 horizontalArrangement = Arrangement.End, // Align to Right
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.media_source),
-                    contentDescription = null,
+                OutlinedMediaButton(
+                    text = "USB",
+                    iconResId = R.drawable.usb,
+                    onClick = { /* Handle Source Click */ },
                     modifier = Modifier.sharedElement(
                         sharedContentState = rememberSharedContentState(key = "source"),
                         animatedVisibilityScope = animatedVisibilityScope,
                         boundsTransform = slowBoundsTransform
-                    ),
-                    contentScale = ContentScale.Fit
+                    )
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
-                Image(
-                    modifier = Modifier
-                        .padding(1.dp)
-                        .width(48.dp)
-                        .height(54.dp)
-                        .clickable { onShrink() }
-                        .sharedElement(
+                IconButton(onClick = { /* Handle Minimize */ }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.minimise),
+                        contentDescription = "Minimize",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.sharedElement(
                             sharedContentState = rememberSharedContentState(key = "minmax"),
                             animatedVisibilityScope = animatedVisibilityScope,
-                        ),
-                    painter = painterResource(id = R.drawable.maximise),
-                    contentDescription = "image description",
-                    contentScale = ContentScale.None
-                )
+                        )
+                    )
+                }
             }
 
             // Main Content: Album Art + Info
