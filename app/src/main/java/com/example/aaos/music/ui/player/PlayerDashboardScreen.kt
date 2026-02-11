@@ -102,13 +102,18 @@ fun PlayerDashboardContent(
 
             MediaSongList(
                 state = state,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
                 onEvent = onEvent,
                 modifier = Modifier.weight(0.4f)
+
             )
         } else {
 
             MediaSongList(
                 state = state,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
                 onEvent = onEvent,
                 modifier = Modifier.weight(0.4f)
             )
@@ -128,6 +133,8 @@ fun PlayerDashboardContent(
 @Composable
 private fun MediaSongList(
     state: PlayerState,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onEvent: (PlayerEvent) -> Unit,
     modifier: Modifier,
 ) {
@@ -156,7 +163,9 @@ private fun MediaSongList(
             queue = state.queue,
             currentTrackId = state.currentTrack?.id?.toLongOrNull(),
             onTrackClick = { index -> onEvent(PlayerEvent.PlayByIndex(index)) },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope
         )
     }
 }

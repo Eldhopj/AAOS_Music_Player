@@ -2,6 +2,7 @@ package com.example.aaos.music.core.ui.components.album
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,7 +41,7 @@ fun AlbumArt(
         var isLoaded by remember { mutableStateOf(false) }
 
         // Animate scale when loaded
-        val animatedScale by androidx.compose.animation.core.animateFloatAsState(
+        val animatedScale by animateFloatAsState(
             targetValue = if (isLoaded) 1f else 0.8f,
             animationSpec = tween(durationMillis = 500),
             label = "AlbumArtScale"
