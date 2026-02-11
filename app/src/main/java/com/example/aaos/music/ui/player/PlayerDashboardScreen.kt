@@ -219,7 +219,9 @@ private fun MediaControlPanel(
                         painter = painterResource(id = R.drawable.minimise),
                         contentDescription = "Minimize",
                         tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.sharedElement(
+                        modifier = Modifier
+                            .clickable { onShrink() }
+                            .sharedElement(
                             sharedContentState = rememberSharedContentState(key = "minmax"),
                             animatedVisibilityScope = animatedVisibilityScope,
                         )
