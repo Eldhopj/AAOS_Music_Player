@@ -65,11 +65,12 @@ fun QueueList(
     Surface(
         modifier = modifier
             .fillMaxSize()
+            .padding(top = 16.dp, end = 16.dp, bottom = 16.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outline, // Subtle border
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(20.dp)
             ),
         color = Color.Transparent,
         shape = RoundedCornerShape(16.dp)
@@ -91,7 +92,7 @@ fun QueueList(
                     )
                     Spacer(modifier = Modifier.width(48.dp))
                     Text(
-                        text = "Select Album",
+                        text = "Select Song",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(1f)

@@ -34,7 +34,7 @@ fun MusicProgressBar(
         thumb = {
             Box(
                 modifier = Modifier
-                    .size(20.dp)
+                    .size(18.dp)
                     .background(MaterialTheme.colorScheme.primary, CircleShape)
             )
         },
