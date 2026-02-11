@@ -49,11 +49,13 @@ import com.example.aaos.music.core.ui.components.buttons.OutlinedMediaButton
 import com.example.aaos.music.core.ui.components.sliders.MusicProgressBar
 import com.example.aaos.music.core.ui.theme.CarMusicTheme
 import com.example.aaos.music.core.ui.theme.gradientColors
+import com.example.aaos.music.core.ui.utils.rememberUiDimensions
 import com.example.aaos.music.domain.model.LocalSong
 import com.example.aaos.music.domain.repository.Track
 import com.example.aaos.music.ui.player.components.PlayerControls
 import com.example.aaos.music.ui.player.components.QueueList
 import com.example.aaos.music.ui.player.components.SongInfo
+import com.example.aaos.music.ui.viewmodel.PlayerViewModel
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -169,7 +171,7 @@ private fun MediaControlPanel(
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier
 ) {
-
+    val dims = rememberUiDimensions()
     with(sharedTransitionScope) {
         Column(
             modifier = modifier
@@ -186,7 +188,7 @@ private fun MediaControlPanel(
             Row() {
                 AlbumArt(
                     imageUrl = state.currentTrack?.albumArtUrl,
-                    modifier = Modifier.size(350.dp),
+                    modifier = Modifier.size(dims.albumArtSizeBigSize),
                     sharedTransitionScope = sharedTransitionScope,
                     animatedVisibilityScope = animatedVisibilityScope
                 )
@@ -211,8 +213,8 @@ private fun MediaControlPanel(
                         Image(
                             modifier = Modifier
                                 .padding(1.dp)
-                                .width(48.dp)
-                                .height(54.dp)
+                                .width(dims.playerMinMaxButtonWidth)
+                                .height(dims.playerMinMaxButtonHeight)
                                 .clickable { onShrink() }
                                 .sharedElement(
                                     sharedContentState = rememberSharedContentState(key = "minmax"),
@@ -225,16 +227,16 @@ private fun MediaControlPanel(
                         )
                     }
                     Row(
-                        modifier = Modifier.fillMaxWidth().height(290.dp),
+                        modifier = Modifier.fillMaxWidth().height(dims.songInfoContainerSizeHeight),
                         verticalAlignment = Alignment.Bottom
                     ) {
 
                         Spacer(modifier = Modifier.width(24.dp))
 
                         SongInfo(
-                            title = state.currentTrack?.title ?: "Song title goes here till it then its marquee.....",
-                            artist = state.currentTrack?.artist ?: "Artist Name",
-                            album = "Album Name",
+                            title = state.currentTrack?.title ?: "",
+                            artist = state.currentTrack?.artist ?: "",
+                            album = state.currentTrack?.album ?: "",
                             modifier = Modifier.weight(1f),
                             sharedTransitionScope = sharedTransitionScope,
                             animatedVisibilityScope = animatedVisibilityScope

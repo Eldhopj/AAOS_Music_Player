@@ -46,7 +46,9 @@ import com.example.aaos.music.core.ui.theme.CarMusicTheme
 import com.example.aaos.music.core.ui.theme.GradientEnd
 import com.example.aaos.music.core.ui.theme.GradientStart
 import com.example.aaos.music.core.ui.theme.gradientColors
+import com.example.aaos.music.core.ui.utils.rememberUiDimensions
 import com.example.aaos.music.ui.player.components.PlayerControls
+import com.example.aaos.music.ui.viewmodel.PlayerViewModel
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -65,11 +67,11 @@ fun SmallPlayerScreen(
     }
 
     CarMusicTheme {
-
+        val dims = rememberUiDimensions()
             Row(
                 modifier = modifier
-                    .padding(24.dp),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    .padding(dims.smallScreenPlayerPadding),
+                horizontalArrangement = Arrangement.spacedBy(dims.smallScreenPlayerPadding),
             ) {
                 if (state.isLoading) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -118,10 +120,12 @@ fun SmallPlayerControlsSection(
 ) {
     val cornerRadius = 24
     val shape = RoundedCornerShape(cornerRadius.dp)
+
+    val dims = rememberUiDimensions()
     with(sharedTransitionScope) {
         Column(
             modifier = modifier
-                .width(394.dp)
+                .width(dims.smallScreenPlayerWidth)
                 .clip(shape)
                 .wrapContentHeight()
                 .sharedBounds(
@@ -140,17 +144,17 @@ fun SmallPlayerControlsSection(
                     shape = shape,
                     color = MaterialTheme.colorScheme.outline
                 ),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
+            verticalArrangement = Arrangement.spacedBy(dims.smallScreenPlayerSourceButtonPaddingTop),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             with(sharedTransitionScope) {
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(dims.smallScreenPlayerSourceButtonPaddingTop))
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier
-                        .width(356.dp)
-                        .height(59.dp)
+                        .width(dims.smallScreenPlayerSourceButtonWidth)
+                        .height(dims.smallScreenPlayerSourceButtonHeight)
                 ) {
 
                     // source selection
@@ -169,8 +173,8 @@ fun SmallPlayerControlsSection(
                     Image(
                         modifier = Modifier
                             .padding(1.dp)
-                            .width(48.dp)
-                            .height(54.dp)
+                            .width(dims.playerMinMaxButtonWidth)
+                            .height(dims.playerMinMaxButtonHeight)
                             .clickable { onExpand() }
                             .sharedElement(
                                 sharedContentState = rememberSharedContentState(key = "minmax"),
@@ -186,7 +190,7 @@ fun SmallPlayerControlsSection(
 
                 AlbumArt(
                     imageUrl = state.currentTrack?.albumArtUrl,
-                    modifier = Modifier.size(214.dp), // Large art
+                    modifier = Modifier.size(dims.albumArtSizeSmallWidth, dims.albumArtSizeSmallHeight), // Large art
                     sharedTransitionScope = sharedTransitionScope,
                     animatedVisibilityScope = animatedVisibilityScope
                 )
@@ -221,7 +225,7 @@ fun SmallPlayerControlsSection(
                     )
                 }
 
-                Box(modifier = Modifier.size(344.dp, 102.dp)) {
+                Box(modifier = Modifier.size(dims.smallPlayerControlWidth, dims.smallPlayerControlHeight)) {
                     PlayerControls(
                         isPlaying = state.isPlaying,
                         isShuffleEnabled = state.isShuffleEnabled,

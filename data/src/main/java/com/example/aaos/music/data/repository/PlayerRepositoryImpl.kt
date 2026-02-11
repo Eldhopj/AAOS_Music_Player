@@ -191,6 +191,7 @@ class PlayerRepositoryImpl @Inject constructor(
             id = mediaId,
             title = mediaMetadata.title?.toString() ?: "Unknown",
             artist = mediaMetadata.artist?.toString() ?: "Unknown",
+            album = mediaMetadata.albumTitle?.toString(),
             albumArtUrl = mediaMetadata.artworkUri?.toString(),
             duration = duration
         )

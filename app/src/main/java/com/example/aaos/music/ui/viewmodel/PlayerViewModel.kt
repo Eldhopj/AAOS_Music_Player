@@ -1,4 +1,4 @@
-package com.example.aaos.music.ui.player
+package com.example.aaos.music.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +7,8 @@ import com.example.aaos.music.domain.usecase.GetLocalSongsUseCase
 import com.example.aaos.music.domain.usecase.PlayerIntent
 import com.example.aaos.music.domain.usecase.SendPlayerIntentUseCase
 import com.example.aaos.music.driveside.DriveSideRepository
+import com.example.aaos.music.ui.player.PlayerEvent
+import com.example.aaos.music.ui.player.PlayerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +35,8 @@ class PlayerViewModel @Inject constructor(
 
     fun loadLocalMusic() {
         viewModelScope.launch {
+            if (_state.value.queue.isNotEmpty()) return@launch
+
             try {
                 _state.update { it.copy(isLoading = true, error = null) }
                 val songs = getLocalSongsUseCase()

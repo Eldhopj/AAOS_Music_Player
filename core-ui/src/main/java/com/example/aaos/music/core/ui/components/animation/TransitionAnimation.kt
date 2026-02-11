@@ -9,7 +9,7 @@ import androidx.compose.animation.core.tween
 @OptIn(ExperimentalSharedTransitionApi::class)
 val slowBoundsTransform = BoundsTransform { initialBounds, targetBounds ->
     tween(
-        durationMillis = 600,   // <-- Slow it down (increase duration)
+        durationMillis = 700,   // <-- Slow it down (increase duration)
         easing = LinearOutSlowInEasing
     )
 }
