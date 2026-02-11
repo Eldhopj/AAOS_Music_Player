@@ -3,6 +3,7 @@ package com.example.aaos.music.ui.player.components
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -39,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -79,14 +81,27 @@ fun QueueList(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.back),
+                        contentDescription = "image description",
+                        contentScale = ContentScale.None
+                    )
+                    Spacer(modifier = Modifier.width(48.dp))
                     Text(
                         text = "Select Album",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(1f)
                     )
+                    Image(
+                        painter = painterResource(id = R.drawable.album),
+                        contentDescription = "image description",
+                        contentScale = ContentScale.None
+                    )
+
                 }
 
                 HorizontalDivider(
@@ -187,7 +202,8 @@ fun QueueItem(
             imageUrl = song.albumArtUri,
             sharedTransitionScope = sharedTransitionScope,
             animatedVisibilityScope = animatedVisibilityScope,
-            modifier = Modifier.size(42.dp)
+            modifier = Modifier.size(42.dp),
+            animKey = ""
         )
 
         Spacer(modifier = Modifier.width(16.dp))

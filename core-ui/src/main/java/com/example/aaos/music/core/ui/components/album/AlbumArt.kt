@@ -37,6 +37,7 @@ fun AlbumArt(
     modifier: Modifier = Modifier,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
+    animKey: String = "image"
 ) {
     with(sharedTransitionScope) {
         var isLoaded by remember { mutableStateOf(false) }
@@ -60,7 +61,7 @@ fun AlbumArt(
                 )
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant).sharedElement(
-                    rememberSharedContentState(key = "image"),
+                    rememberSharedContentState(key = animKey),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = slowBoundsTransform
                 )
