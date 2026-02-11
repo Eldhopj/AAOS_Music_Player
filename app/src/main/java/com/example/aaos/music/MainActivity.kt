@@ -1,6 +1,8 @@
 package com.example.aaos.music
 
 import android.Manifest
+import android.content.Context
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -8,6 +10,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,15 +36,23 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.registerReceiver
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.aaos.music.core.ui.theme.CarMusicTheme
 import com.example.aaos.music.core.ui.theme.GradientEnd
 import com.example.aaos.music.core.ui.theme.GradientStart
+import com.example.aaos.music.driveside.DriveSideBroadcastContract
+import com.example.aaos.music.driveside.DriveSideToggleReceiver
 import com.example.aaos.music.ui.player.PlayerDashboardScreen
+import com.example.aaos.music.ui.player.SmallPlayerScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private var driveSideReceiver: DriveSideToggleReceiver? = null
+
+    @OptIn(ExperimentalSharedTransitionApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -58,11 +71,60 @@ class MainActivity : ComponentActivity() {
                             )
                     ) {
                         PermissionWrapper {
-                            PlayerDashboardScreen()
+                            var showDetails by remember { mutableStateOf(false) }
+
+                            SharedTransitionLayout {
+                                AnimatedContent(
+                                    targetState = showDetails,
+                                    label = "shared_transition"
+                                ) { details ->
+                                    if (!details) {
+                                        PermissionWrapper {
+                                            SmallPlayerScreen(
+                                                sharedTransitionScope = this@SharedTransitionLayout,
+                                                animatedVisibilityScope = this@AnimatedContent,
+                                                onExpand = { showDetails = true },
+                                            )
+                                        }
+
+                                    } else {
+                                        PermissionWrapper {
+                                            PlayerDashboardScreen(
+                                                onShrink = { showDetails = false },
+                                                sharedTransitionScope = this@SharedTransitionLayout,
+                                                animatedVisibilityScope = this@AnimatedContent
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            //  SmallPlayerScreen()
+                            // PlayerDashboardScreen()
                         }
                     }
                 }
             }
+        }
+    }
+    override fun onStart() {
+        super.onStart()
+        if (driveSideReceiver == null) {
+            driveSideReceiver = DriveSideToggleReceiver()
+            val filter = IntentFilter(DriveSideBroadcastContract.ACTION_SET_LHD)
+                registerReceiver(
+                    this,
+                    driveSideReceiver,
+                    filter,
+                    ContextCompat.RECEIVER_EXPORTED // allow external senders like ADB
+                )
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        driveSideReceiver?.let {
+            unregisterReceiver(it)
+            driveSideReceiver = null
         }
     }
 }

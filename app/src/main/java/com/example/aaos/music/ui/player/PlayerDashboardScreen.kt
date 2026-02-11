@@ -1,7 +1,14 @@
 package com.example.aaos.music.ui.player
 
-import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,8 +21,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,57 +35,153 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.aaos.music.core.ui.components.album.AlbumArt
-import com.example.aaos.music.core.ui.components.sliders.MusicProgressBar
-import com.example.aaos.music.core.ui.theme.CarMusicTheme
-import com.example.aaos.music.core.ui.theme.GradientEnd
-import com.example.aaos.music.core.ui.theme.GradientStart
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.aaos.music.core.ui.R
-import com.example.aaos.music.core.ui.components.buttons.OutlinedMediaButton
+import com.example.aaos.music.core.ui.components.album.AlbumArt
+import com.example.aaos.music.core.ui.components.animation.slowBoundsTransform
+import com.example.aaos.music.core.ui.components.sliders.MusicProgressBar
 import com.example.aaos.music.ui.player.components.PlayerControls
 import com.example.aaos.music.ui.player.components.QueueList
 import com.example.aaos.music.ui.player.components.SongInfo
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun PlayerDashboardScreen(
+    onShrink: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     viewModel: PlayerViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    
+    val isLhd by viewModel.isLhd.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         viewModel.loadLocalMusic()
     }
 
     PlayerDashboardContent(
         state = state,
-        onEvent = viewModel::handleEvent
+        onEvent = viewModel::handleEvent,
+        sharedTransitionScope = sharedTransitionScope,
+        animatedVisibilityScope = animatedVisibilityScope,
+        onShrink = onShrink,
+        isLhd = isLhd
     )
+
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun PlayerDashboardContent(
     state: PlayerState,
-    onEvent: (PlayerEvent) -> Unit
+    onShrink: () -> Unit,
+    onEvent: (PlayerEvent) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    isLhd: Boolean,
 ) {
     Row(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Transparent)
     ) {
-        // LEFT PANE (60%)
+
+        if (isLhd) {
+            MediaControlPanel(
+                modifier = Modifier.weight(0.6f),
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
+                state = state,
+                onShrink = onShrink,
+                onEvent = onEvent
+            )
+
+            MediaSongList(
+                state = state,
+                onEvent = onEvent,
+                modifier = Modifier.weight(0.4f)
+            )
+        } else {
+
+            MediaSongList(
+                state = state,
+                onEvent = onEvent,
+                modifier = Modifier.weight(0.4f)
+            )
+
+            MediaControlPanel(
+                modifier = Modifier.weight(0.6f),
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
+                state = state,
+                onShrink = onShrink,
+                onEvent = onEvent
+            )
+        }
+    }
+}
+
+@Composable
+private fun MediaSongList(
+    state: PlayerState,
+    onEvent: (PlayerEvent) -> Unit,
+    modifier: Modifier,
+) {
+    val cornerRadius: Int = 24
+    val shape = RoundedCornerShape(cornerRadius.dp)
+
+    Box(
+        modifier = modifier
+            .fillMaxHeight()
+            .padding(32.dp)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF2F374C), // top
+                        Color(0xFF000000)  // bottom
+                    )
+                )
+            )
+            .border(
+                width = 1.dp,
+                color = Color(0xFF68696E),
+                shape = shape,
+            )
+    ) {
+        QueueList(
+            queue = state.queue,
+            currentTrackId = state.currentTrack?.id?.toLongOrNull(),
+            onTrackClick = { index -> onEvent(PlayerEvent.PlayByIndex(index)) },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+@Composable
+private fun MediaControlPanel(
+    state: PlayerState,
+    onShrink: () -> Unit,
+    onEvent: (PlayerEvent) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    modifier: Modifier
+) {
+
+    with(sharedTransitionScope) {
         Column(
-            modifier = Modifier
-                .weight(0.6f)
+            modifier = modifier
                 .fillMaxHeight()
-                .padding(32.dp),
+                .padding(32.dp)
+                .sharedBounds(
+                    sharedContentState = rememberSharedContentState(key = "container"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             // Top Section (Header / Status)
@@ -87,21 +190,32 @@ fun PlayerDashboardContent(
                 horizontalArrangement = Arrangement.End, // Align to Right
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                 OutlinedMediaButton(
-                     text = "USB",
-                     iconResId = R.drawable.usb,
-                     onClick = { /* Handle Source Click */ }
-                 )
-                 
-                 Spacer(modifier = Modifier.width(16.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.media_source),
+                    contentDescription = null,
+                    modifier = Modifier.sharedElement(
+                        sharedContentState = rememberSharedContentState(key = "source"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = slowBoundsTransform
+                    ),
+                    contentScale = ContentScale.Fit
+                )
 
-                 IconButton(onClick = { /* Handle Minimize */ }) {
-                     Icon(
-                         painter = painterResource(id = R.drawable.minimise),
-                         contentDescription = "Minimize",
-                         tint = MaterialTheme.colorScheme.onSurface
-                     )
-                 }
+                Spacer(modifier = Modifier.width(16.dp))
+                Image(
+                    modifier = Modifier
+                        .padding(1.dp)
+                        .width(48.dp)
+                        .height(54.dp)
+                        .clickable { onShrink() }
+                        .sharedElement(
+                            sharedContentState = rememberSharedContentState(key = "minmax"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                        ),
+                    painter = painterResource(id = R.drawable.maximise),
+                    contentDescription = "image description",
+                    contentScale = ContentScale.None
+                )
             }
 
             // Main Content: Album Art + Info
@@ -111,7 +225,9 @@ fun PlayerDashboardContent(
             ) {
                 AlbumArt(
                     imageUrl = state.currentTrack?.albumArtUrl,
-                    modifier = Modifier.size(200.dp) // Large art
+                    modifier = Modifier.size(200.dp), // Large art
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope
                 )
 
                 Spacer(modifier = Modifier.width(24.dp))
@@ -120,7 +236,9 @@ fun PlayerDashboardContent(
                     title = state.currentTrack?.title ?: "Select a song",
                     artist = state.currentTrack?.artist ?: "",
                     album = null, // Track doesn't seem to have album field in shared code, inferred or null
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope
                 )
             }
 
@@ -128,7 +246,7 @@ fun PlayerDashboardContent(
             Column(modifier = Modifier.fillMaxWidth()) {
                 val duration = state.currentTrack?.duration ?: 1L
                 val position = state.playbackPosition.coerceAtMost(duration)
-                var sliderPosition by remember(position) { mutableFloatStateOf(position.toFloat()) }
+                var sliderPosition by remember(position) { mutableStateOf(position.toFloat()) }
                 var isDragging by remember { mutableStateOf(false) }
 
                 // Timestamps
@@ -137,7 +255,7 @@ fun PlayerDashboardContent(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = formatTime(if(isDragging) sliderPosition.toLong() else position),
+                        text = formatTime(if (isDragging) sliderPosition.toLong() else position),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -147,10 +265,10 @@ fun PlayerDashboardContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                
+
                 MusicProgressBar(
                     progress = if (duration > 0) (if (isDragging) sliderPosition else position.toFloat()) / duration else 0f,
-                    onValueChange = { 
+                    onValueChange = {
                         isDragging = true
                         sliderPosition = it * duration
                     },
@@ -172,40 +290,13 @@ fun PlayerDashboardContent(
                     onNextClick = { onEvent(PlayerEvent.SkipNextClicked) },
                     onShuffleClick = { onEvent(PlayerEvent.ToggleShuffle) },
                     onRepeatClick = { onEvent(PlayerEvent.CycleRepeat) },
+                    isRepeatDisplay = true,
+                    isShuffleDisplay = true,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-        }
-
-        // VERTICAL DIVIDER (Optional, but good for separation)
-        Box(
-            modifier = Modifier
-                .width(1.dp)
-                .fillMaxHeight()
-                .background(
-                    Brush.verticalGradient(
-                        listOf(
-                            Color.Transparent,
-                            MaterialTheme.colorScheme.outlineVariant,
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-
-        // RIGHT PANE (40%)
-        Box(
-            modifier = Modifier
-                .weight(0.4f)
-                .fillMaxHeight()
-                .background(Color.Transparent)
-        ) {
-            QueueList(
-                queue = state.queue,
-                currentTrackId = state.currentTrack?.id?.toLongOrNull(),
-                onTrackClick = { index -> onEvent(PlayerEvent.PlayByIndex(index)) },
-                modifier = Modifier.fillMaxSize()
-            )
         }
     }
 }
@@ -219,48 +310,4 @@ private fun formatTime(millis: Long): String {
 
 // PREVIEWS
 
-@Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 1024, heightDp = 768)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode")
-@Composable
-fun PlayerDashboardPreview() {
-    CarMusicTheme(darkTheme = true) {
-        PlayerDashboardContent(
-            state = PlayerState(
-                currentTrack = com.example.aaos.music.domain.repository.Track(
-                    id = "1",
-                    title = "Shape of You",
-                    artist = "Ed Sheeran",
-                    duration = 240000L
-                ),
-                isPlaying = true,
-                playbackPosition = 60000L,
-                queue = listOf(
-                    com.example.aaos.music.domain.model.LocalSong(1, "Song 1", "Artist 1", "Album 1", 200000, "", null),
-                    com.example.aaos.music.domain.model.LocalSong(2, "Song 2", "Artist 2", "Album 2", 200000, "", null),
-                    com.example.aaos.music.domain.model.LocalSong(3, "Song 3", "Artist 3", "Album 3", 200000, "", null)
-                )
-            ),
-            onEvent = {}
-        )
-    }
-}
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light Mode")
-@Composable
-fun PlayerDashboardLightPreview() {
-    CarMusicTheme(darkTheme = false) {
-        Surface {
-           PlayerDashboardContent(
-            state = PlayerState(
-                 currentTrack = com.example.aaos.music.domain.repository.Track(
-                    id = "1",
-                    title = "Light Mode Song",
-                    artist = "Artist Name",
-                    duration = 180000L
-                )
-            ),
-            onEvent = {}
-        ) 
-        }
-    }
-}

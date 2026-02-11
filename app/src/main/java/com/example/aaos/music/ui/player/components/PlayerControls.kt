@@ -1,5 +1,7 @@
 package com.example.aaos.music.ui.player.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.aaos.music.core.ui.R
+import com.example.aaos.music.core.ui.components.animation.slowBoundsTransform
 import com.example.aaos.music.core.ui.components.buttons.PlayPauseButton
 
 @Composable
@@ -25,67 +28,86 @@ fun PlayerControls(
     onNextClick: () -> Unit,
     onShuffleClick: () -> Unit,
     onRepeatClick: () -> Unit,
+    isShuffleDisplay: Boolean = false,
+    isRepeatDisplay: Boolean = false,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Shuffle
-        val shuffleTint = if (isShuffleEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-        IconButton(onClick = onShuffleClick) {
-            Icon(
-                painter = painterResource(id = R.drawable.shuffle),
-                contentDescription = "Shuffle",
-                tint = shuffleTint,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-
-        // Previous
-        IconButton(
-            onClick = onPreviousClick,
-            modifier = Modifier.size(48.dp)
+    with(sharedTransitionScope) {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.previous),
-                contentDescription = "Previous",
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(32.dp)
-            )
-        }
+            if (isShuffleDisplay) {
+                // Shuffle
+                IconButton(onClick = onShuffleClick) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.shuffle),
+                        contentDescription = "Shuffle",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
 
-        // Play/Pause
-        PlayPauseButton(
-            isPlaying = isPlaying,
-            onClick = onPlayPauseClick,
-            modifier = Modifier.size(72.dp)
-        )
+            // Previous
+            IconButton(
+                onClick = onPreviousClick,
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.previous),
+                    contentDescription = "Previous",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(32.dp).sharedElement(
+                        sharedContentState = rememberSharedContentState(key = "previous"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = slowBoundsTransform
+                    )
+                )
+            }
 
-        // Next
-        IconButton(
-            onClick = onNextClick,
-            modifier = Modifier.size(48.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.next),
-                contentDescription = "Next",
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(32.dp)
+            // Play/Pause
+            PlayPauseButton(
+                isPlaying = isPlaying,
+                onClick = onPlayPauseClick,
+                modifier = Modifier.size(72.dp).sharedElement(
+                    sharedContentState = rememberSharedContentState(key = "play"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    boundsTransform = slowBoundsTransform
+                )
             )
-        }
 
-        // Repeat
-        // 0 = Off, 1 = One, 2 = All
-        val repeatTint = if (repeatMode != 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-        IconButton(onClick = onRepeatClick) {
-            Icon(
-                painter = painterResource(id = R.drawable.repeat),
-                contentDescription = "Repeat",
-                tint = repeatTint,
-                modifier = Modifier.size(24.dp)
-            )
+            // Next
+            IconButton(
+                onClick = onNextClick,
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.next),
+                    contentDescription = "Next",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(32.dp).sharedElement(
+                        sharedContentState = rememberSharedContentState(key = "next"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = slowBoundsTransform
+                    )
+                )
+            }
+
+            if (isRepeatDisplay) {
+                // Repeat
+                IconButton(onClick = onRepeatClick) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.repeat),
+                        contentDescription = "Repeat",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
         }
     }
 }

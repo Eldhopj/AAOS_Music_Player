@@ -1,7 +1,6 @@
 package com.example.aaos.music.core.ui.components.buttons
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -30,7 +29,7 @@ fun OutlinedMediaButton(
         onClick = onClick,
         shape = RoundedCornerShape(50), // Pill shape
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), // Or specific gray
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 4.dp),
         modifier = modifier
     ) {
         Row(

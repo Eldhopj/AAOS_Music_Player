@@ -6,6 +6,7 @@ import com.example.aaos.music.domain.repository.PlayerRepository
 import com.example.aaos.music.domain.usecase.GetLocalSongsUseCase
 import com.example.aaos.music.domain.usecase.PlayerIntent
 import com.example.aaos.music.domain.usecase.SendPlayerIntentUseCase
+import com.example.aaos.music.driveside.DriveSideRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +24,8 @@ class PlayerViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(PlayerState(isLoading = true))
     val state: StateFlow<PlayerState> = _state.asStateFlow()
+
+    val isLhd = DriveSideRepository.isLhd
 
     init {
         observePlayerState()
