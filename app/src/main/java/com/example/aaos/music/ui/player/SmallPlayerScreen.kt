@@ -41,6 +41,8 @@ import com.example.aaos.music.core.ui.R
 import com.example.aaos.music.core.ui.components.album.AlbumArt
 import com.example.aaos.music.core.ui.components.animation.slowBoundsTransform
 import com.example.aaos.music.core.ui.theme.CarMusicTheme
+import com.example.aaos.music.core.ui.theme.GradientEnd
+import com.example.aaos.music.core.ui.theme.GradientStart
 import com.example.aaos.music.ui.player.components.PlayerControls
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -124,17 +126,9 @@ fun SmallPlayerControlsSection(
                     enter = fadeIn(),
                     exit = fadeOut()
                 )
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF2F374C), // top
-                            Color(0xFF000000)  // bottom
-                        )
-                    )
-                )
                 .border(
                     width = 1.dp,
-                    color = Color(0xFF68696E),
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
                     shape = shape
                 ),
             verticalArrangement = Arrangement.spacedBy(18.dp),
