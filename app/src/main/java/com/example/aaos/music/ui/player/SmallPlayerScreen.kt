@@ -126,14 +126,6 @@ fun SmallPlayerControlsSection(
                     enter = fadeIn(),
                     exit = fadeOut()
                 )
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            GradientStart,
-                            GradientEnd
-                        )
-                    )
-                )
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
