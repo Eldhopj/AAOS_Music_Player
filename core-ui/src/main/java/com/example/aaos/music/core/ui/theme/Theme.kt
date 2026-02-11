@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -17,11 +18,12 @@ private val DarkColorScheme = darkColorScheme(
     onPrimary = DarkOnPrimary,
     background = DarkBackground,
     onBackground = DarkOnBackground,
-    surface = DarkBackground, // For now, surface matches background as per design
+    surface = DarkBackground,
     onSurface = DarkOnBackground,
     secondary = DarkSecondary,
     surfaceVariant = DarkSurfaceVariant,
-    onSurfaceVariant = DarkOnSurfaceVariant
+    onSurfaceVariant = DarkOnSurfaceVariant,
+    outline = DarkOutline
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -31,7 +33,11 @@ private val LightColorScheme = lightColorScheme(
     onBackground = LightOnBackground,
     surface = LightSurface,
     onSurface = LightOnBackground,
-    secondary = LightSecondary
+    secondary = LightSecondary,
+    onSecondary = LightOnSecondary,
+    surfaceVariant = LightSurfaceVariant,
+    onSurfaceVariant = LightOnSurfaceVariant,
+    outline = LightOutline
 )
 
 @Composable
@@ -40,19 +46,42 @@ fun CarMusicTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-    
+    val gradientColors = if (darkTheme) {
+        GradientColors(start = GradientStart, end = GradientEnd)
+    } else {
+        GradientColors(start = LightGradientStart, end = LightGradientEnd)
+    }
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as? Activity)?.window
             window?.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window!!, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window!!, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = MaterialTheme.typography,
-        content = content
+    CompositionLocalProvider(LocalGradientColors provides gradientColors) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = MaterialTheme.typography,
+            content = content
+        )
+    }
+}
+
+data class GradientColors(
+    val start: Color,
+    val end: Color
+)
+
+val LocalGradientColors = androidx.compose.runtime.staticCompositionLocalOf {
+    GradientColors(
+        start = Color.Unspecified,
+        end = Color.Unspecified
     )
 }
+
+val MaterialTheme.gradientColors: GradientColors
+    @Composable
+    get() = LocalGradientColors.current

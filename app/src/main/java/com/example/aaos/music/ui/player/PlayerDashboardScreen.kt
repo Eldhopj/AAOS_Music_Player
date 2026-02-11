@@ -141,36 +141,14 @@ private fun MediaSongList(
     onEvent: (PlayerEvent) -> Unit,
     modifier: Modifier,
 ) {
-    val cornerRadius: Int = 24
-    val shape = RoundedCornerShape(cornerRadius.dp)
-
-    Box(
-        modifier = modifier
-            .fillMaxHeight()
-            .padding(32.dp)
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF2F374C), // top
-                        Color(0xFF000000)  // bottom
-                    )
-                )
-            )
-            .border(
-                width = 1.dp,
-                color = Color(0xFF68696E),
-                shape = shape,
-            )
-    ) {
-        QueueList(
-            queue = state.queue,
-            currentTrackId = state.currentTrack?.id?.toLongOrNull(),
-            onTrackClick = { index -> onEvent(PlayerEvent.PlayByIndex(index)) },
-            modifier = Modifier.fillMaxSize(),
-            sharedTransitionScope = sharedTransitionScope,
-            animatedVisibilityScope = animatedVisibilityScope
-        )
-    }
+    QueueList(
+        queue = state.queue,
+        currentTrackId = state.currentTrack?.id?.toLongOrNull(),
+        onTrackClick = { index -> onEvent(PlayerEvent.PlayByIndex(index)) },
+        modifier = modifier.fillMaxSize(),
+        sharedTransitionScope = sharedTransitionScope,
+        animatedVisibilityScope = animatedVisibilityScope
+    )
 }
 
 @Composable
@@ -222,9 +200,9 @@ private fun MediaControlPanel(
                         modifier = Modifier
                             .clickable { onShrink() }
                             .sharedElement(
-                            sharedContentState = rememberSharedContentState(key = "minmax"),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                        )
+                                sharedContentState = rememberSharedContentState(key = "minmax"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                            )
                     )
                 }
             }

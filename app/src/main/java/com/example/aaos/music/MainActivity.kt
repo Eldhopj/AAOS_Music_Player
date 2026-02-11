@@ -39,8 +39,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.registerReceiver
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.aaos.music.core.ui.theme.CarMusicTheme
-import com.example.aaos.music.core.ui.theme.GradientEnd
-import com.example.aaos.music.core.ui.theme.GradientStart
+import com.example.aaos.music.core.ui.theme.gradientColors
 import com.example.aaos.music.driveside.DriveSideBroadcastContract
 import com.example.aaos.music.driveside.DriveSideToggleReceiver
 import com.example.aaos.music.ui.player.PlayerDashboardScreen
@@ -66,7 +65,10 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .background(
                                 brush = Brush.verticalGradient(
-                                    colors = listOf(GradientStart, GradientEnd)
+                                    colors = listOf(
+                                        MaterialTheme.gradientColors.start,
+                                        MaterialTheme.gradientColors.end
+                                    )
                                 )
                             )
                     ) {
