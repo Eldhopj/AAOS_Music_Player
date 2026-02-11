@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.aaos.music.core.ui.R
 import com.example.aaos.music.core.ui.components.animation.slowBoundsTransform
 import com.example.aaos.music.core.ui.components.buttons.PlayPauseButton
+import com.example.aaos.music.core.ui.utils.rememberUiDimensions
 
 @Composable
 fun PlayerControls(
@@ -34,6 +35,7 @@ fun PlayerControls(
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier
 ) {
+    val dims = rememberUiDimensions()
     with(sharedTransitionScope) {
         Row(
             modifier = modifier.fillMaxWidth(),
@@ -55,13 +57,13 @@ fun PlayerControls(
             // Previous
             IconButton(
                 onClick = onPreviousClick,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(dims.previousIconButton)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.previous),
                     contentDescription = "Previous",
                     tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(32.dp).sharedElement(
+                    modifier = Modifier.size(dims.previousIcon).sharedElement(
                         sharedContentState = rememberSharedContentState(key = "previous"),
                         animatedVisibilityScope = animatedVisibilityScope,
                         boundsTransform = slowBoundsTransform
@@ -73,7 +75,7 @@ fun PlayerControls(
             PlayPauseButton(
                 isPlaying = isPlaying,
                 onClick = onPlayPauseClick,
-                modifier = Modifier.size(72.dp).sharedElement(
+                modifier = Modifier.size(dims.playPauseIconButton).sharedElement(
                     sharedContentState = rememberSharedContentState(key = "play"),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = slowBoundsTransform
@@ -83,13 +85,13 @@ fun PlayerControls(
             // Next
             IconButton(
                 onClick = onNextClick,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(dims.nextIconButton)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.next),
                     contentDescription = "Next",
                     tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(32.dp).sharedElement(
+                    modifier = Modifier.size(dims.nextIcon).sharedElement(
                         sharedContentState = rememberSharedContentState(key = "next"),
                         animatedVisibilityScope = animatedVisibilityScope,
                         boundsTransform = slowBoundsTransform
