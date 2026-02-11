@@ -15,6 +15,8 @@ val DarkOnPrimary = Color(0xFF000000) // Black icon on white primary
 val DarkSecondary = Color(0xFFB0BEC5) // Valid secondary for dark mode
 val DarkOutline = Color(0xFF68696E) // For borders/strokes
 
+val DarkSourceOutline = Color(0xFFD9D9D9)
+
 // Light Theme Colors
 
 val LightGradientStart = Color(0xFFFFFFFF)
@@ -29,3 +31,5 @@ val LightOnPrimary = Color(0xFFFFFFFF)
 val LightSecondary = Color(0xFF53607A) // A complementary secondary
 val LightOnSecondary = Color(0xFFFFFFFF)
 val LightOutline = Color(0xFF74777F)
+
+val LightSourceOutline = Color(0xFFF5F5F5)

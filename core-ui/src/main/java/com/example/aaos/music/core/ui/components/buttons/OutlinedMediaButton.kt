@@ -30,8 +30,8 @@ fun OutlinedMediaButton(
         onClick = onClick,
         shape = RoundedCornerShape(50), // Pill shape
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), // Or specific gray
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-        modifier = modifier
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 2.dp),
+        modifier = modifier.size(width = 210.dp, height = 59.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -40,9 +40,9 @@ fun OutlinedMediaButton(
                 painter = painterResource(id = iconResId),
                 contentDescription = null, // decorative
                 tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(39.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = text,
                 style = MaterialTheme.typography.labelLarge,

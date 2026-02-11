@@ -122,8 +122,8 @@ fun SmallPlayerControlsSection(
         Column(
             modifier = modifier
                 .width(394.dp)
-                .wrapContentHeight()
                 .clip(shape)
+                .wrapContentHeight()
                 .sharedBounds(
                     sharedContentState = rememberSharedContentState(key = "container"),
                     animatedVisibilityScope = animatedVisibilityScope,
@@ -137,7 +137,8 @@ fun SmallPlayerControlsSection(
                     )
                 )).border(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant
+                    shape = shape,
+                    color = MaterialTheme.colorScheme.outline
                 ),
             verticalArrangement = Arrangement.spacedBy(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -66,7 +66,7 @@ fun QueueList(
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant, // Subtle border
+                color = MaterialTheme.colorScheme.outline, // Subtle border
                 shape = RoundedCornerShape(16.dp)
             ),
         color = Color.Transparent,

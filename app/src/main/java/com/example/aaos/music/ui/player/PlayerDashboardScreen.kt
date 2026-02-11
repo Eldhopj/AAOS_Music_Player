@@ -1,16 +1,16 @@
 package com.example.aaos.music.ui.player
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,10 +34,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.contentType
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,7 +47,10 @@ import com.example.aaos.music.core.ui.components.album.AlbumArt
 import com.example.aaos.music.core.ui.components.animation.slowBoundsTransform
 import com.example.aaos.music.core.ui.components.buttons.OutlinedMediaButton
 import com.example.aaos.music.core.ui.components.sliders.MusicProgressBar
+import com.example.aaos.music.core.ui.theme.CarMusicTheme
 import com.example.aaos.music.core.ui.theme.gradientColors
+import com.example.aaos.music.domain.model.LocalSong
+import com.example.aaos.music.domain.repository.Track
 import com.example.aaos.music.ui.player.components.PlayerControls
 import com.example.aaos.music.ui.player.components.QueueList
 import com.example.aaos.music.ui.player.components.SongInfo
@@ -171,7 +174,7 @@ private fun MediaControlPanel(
         Column(
             modifier = modifier
                 .fillMaxHeight()
-                .padding(32.dp)
+                .padding(24.dp)
                 .sharedBounds(
                     sharedContentState = rememberSharedContentState(key = "container"),
                     animatedVisibilityScope = animatedVisibilityScope,
@@ -180,61 +183,64 @@ private fun MediaControlPanel(
                 ),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Top Section (Header / Status)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End, // Align to Right
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedMediaButton(
-                    text = "USB",
-                    iconResId = R.drawable.usb,
-                    onClick = { /* Handle Source Click */ },
-                    modifier = Modifier.sharedElement(
-                        sharedContentState = rememberSharedContentState(key = "source"),
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        boundsTransform = slowBoundsTransform
-                    )
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-                IconButton(onClick = { /* Handle Minimize */ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.minimise),
-                        contentDescription = "Minimize",
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier
-                            .clickable { onShrink() }
-                            .sharedElement(
-                                sharedContentState = rememberSharedContentState(key = "minmax"),
-                                animatedVisibilityScope = animatedVisibilityScope,
-                            )
-                    )
-                }
-            }
-
-            // Main Content: Album Art + Info
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row() {
                 AlbumArt(
                     imageUrl = state.currentTrack?.albumArtUrl,
-                    modifier = Modifier.size(200.dp), // Large art
+                    modifier = Modifier.size(350.dp),
                     sharedTransitionScope = sharedTransitionScope,
                     animatedVisibilityScope = animatedVisibilityScope
                 )
+                Column() {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End, // Align to Right
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.media_source),
+                            contentDescription = null,
+                            modifier = Modifier.sharedElement(
+                                sharedContentState = rememberSharedContentState(key = "source"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                boundsTransform = slowBoundsTransform
+                            ),
+                            contentScale = ContentScale.Fit
+                        )
 
-                Spacer(modifier = Modifier.width(24.dp))
+                        Spacer(modifier = Modifier.width(36.dp))
+                        Image(
+                            modifier = Modifier
+                                .padding(1.dp)
+                                .width(48.dp)
+                                .height(54.dp)
+                                .clickable { onShrink() }
+                                .sharedElement(
+                                    sharedContentState = rememberSharedContentState(key = "minmax"),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    boundsTransform = slowBoundsTransform
+                                ),
+                            painter = painterResource(id = R.drawable.minimise),
+                            contentDescription = "image description",
+                            contentScale = ContentScale.None
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth().height(290.dp),
+                        verticalAlignment = Alignment.Bottom
+                    ) {
 
-                SongInfo(
-                    title = state.currentTrack?.title ?: "Select a song",
-                    artist = state.currentTrack?.artist ?: "",
-                    album = null, // Track doesn't seem to have album field in shared code, inferred or null
-                    modifier = Modifier.weight(1f),
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = animatedVisibilityScope
-                )
+                        Spacer(modifier = Modifier.width(24.dp))
+
+                        SongInfo(
+                            title = state.currentTrack?.title ?: "Song title goes here till it then its marquee.....",
+                            artist = state.currentTrack?.artist ?: "Artist Name",
+                            album = "Album Name",
+                            modifier = Modifier.weight(1f),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                    }
+                }
             }
 
             // Bottom Section: Seekbar + Controls
@@ -245,6 +251,20 @@ private fun MediaControlPanel(
                 var isDragging by remember { mutableStateOf(false) }
 
                 // Timestamps
+
+                MusicProgressBar(
+                    progress = if (duration > 0) (if (isDragging) sliderPosition else position.toFloat()) / duration else 0f,
+                    onValueChange = {
+                        isDragging = true
+                        sliderPosition = it * duration
+                    },
+                    onValueChangeFinished = {
+                        onEvent(PlayerEvent.SeekTo(sliderPosition.toLong()))
+                        isDragging = false
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -260,20 +280,6 @@ private fun MediaControlPanel(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
-                MusicProgressBar(
-                    progress = if (duration > 0) (if (isDragging) sliderPosition else position.toFloat()) / duration else 0f,
-                    onValueChange = {
-                        isDragging = true
-                        sliderPosition = it * duration
-                    },
-                    onValueChangeFinished = {
-                        onEvent(PlayerEvent.SeekTo(sliderPosition.toLong()))
-                        isDragging = false
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
                 Spacer(modifier = Modifier.height(16.dp))
 
                 PlayerControls(
@@ -303,6 +309,43 @@ private fun formatTime(millis: Long): String {
     return String.format("%d:%02d", minutes, seconds)
 }
 
-// PREVIEWS
 
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Preview
+@Composable
+private fun MediaControlPanelPreview() {
+    CarMusicTheme {
+        SharedTransitionLayout {
+            AnimatedVisibility(visible = true, label = "") {
+                val sampleTrack = Track(
+                    id = "1",
+                    title = "Awesome Song",
+                    artist = "The Best Band",
+                    albumArtUrl = null,
+                    duration = 240000L
+                )
+                val sampleQueue = listOf(
+                    LocalSong(1L, "Song 1", "Artist A", "Album X", 200000L, "", null),
+                    LocalSong(2L, "Song 2", "Artist B", "Album Y", 220000L, "", null)
+                )
+                val sampleState = PlayerState(
+                    currentTrack = sampleTrack,
+                    isPlaying = true,
+                    playbackPosition = 60000L,
+                    queue = sampleQueue,
+                    isShuffleEnabled = false,
+                    repeatMode = 0
+                )
 
+                MediaControlPanel(
+                    state = sampleState,
+                    onShrink = {},
+                    onEvent = {},
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this,
+                    modifier = Modifier
+                )
+            }
+        }
+    }
+}
