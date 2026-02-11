@@ -1,3 +1,4 @@
+
 package com.example.aaos.music.ui.player
 
 import android.annotation.SuppressLint
@@ -30,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -43,6 +45,7 @@ import com.example.aaos.music.core.ui.components.animation.slowBoundsTransform
 import com.example.aaos.music.core.ui.theme.CarMusicTheme
 import com.example.aaos.music.core.ui.theme.GradientEnd
 import com.example.aaos.music.core.ui.theme.GradientStart
+import com.example.aaos.music.core.ui.theme.gradientColors
 import com.example.aaos.music.ui.player.components.PlayerControls
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -120,16 +123,21 @@ fun SmallPlayerControlsSection(
             modifier = modifier
                 .width(394.dp)
                 .wrapContentHeight()
+                .clip(shape)
                 .sharedBounds(
                     sharedContentState = rememberSharedContentState(key = "container"),
                     animatedVisibilityScope = animatedVisibilityScope,
                     enter = fadeIn(),
                     exit = fadeOut()
                 )
-                .border(
+                .background(brush = Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.gradientColors.start,
+                        MaterialTheme.gradientColors.end
+                    )
+                )).border(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
-                    shape = shape
+                    color = MaterialTheme.colorScheme.outlineVariant
                 ),
             verticalArrangement = Arrangement.spacedBy(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally,

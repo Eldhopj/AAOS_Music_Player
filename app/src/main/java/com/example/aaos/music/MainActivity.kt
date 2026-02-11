@@ -63,14 +63,6 @@ class MainActivity : ComponentActivity() {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        MaterialTheme.gradientColors.start,
-                                        MaterialTheme.gradientColors.end
-                                    )
-                                )
-                            )
                     ) {
                         PermissionWrapper {
                             var showDetails by remember { mutableStateOf(false) }

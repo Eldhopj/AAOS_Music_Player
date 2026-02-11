@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 // Dark Theme Colors
 val GradientStart = Color(0xFF2F374C)
 val GradientEnd = Color(0xFF000000)
-val DarkBackground = GradientEnd // Fallback to black
+val DarkBackground = GradientStart // Fallback to black
 val DarkSurface = Color(0x80000000) // Semi-transparent black for surface
 val DarkOnBackground = Color(0xFFFFFFFF)
 val DarkSurfaceVariant = Color(0xFF2F374C) // Matches GradientStart
@@ -13,7 +13,7 @@ val DarkOnSurfaceVariant = Color(0xFFC4C7D0) // Light grey for text on variant
 val DarkPrimary = Color(0xFFFFFFFF) // White as per design
 val DarkOnPrimary = Color(0xFF000000) // Black icon on white primary
 val DarkSecondary = Color(0xFFB0BEC5) // Valid secondary for dark mode
-val DarkOutline = Color(0xFFD9D9D9) // For borders/strokes
+val DarkOutline = Color(0xFF68696E) // For borders/strokes
 
 // Light Theme Colors
 

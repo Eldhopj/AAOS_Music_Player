@@ -45,8 +45,8 @@ fun CarMusicTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-    val gradientColors = if (darkTheme) {
+    val colorScheme = if (true) DarkColorScheme else LightColorScheme
+    val gradientColors = if (true) {
         GradientColors(start = GradientStart, end = GradientEnd)
     } else {
         GradientColors(start = LightGradientStart, end = LightGradientEnd)

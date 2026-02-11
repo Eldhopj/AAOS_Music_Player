@@ -47,6 +47,7 @@ import com.example.aaos.music.core.ui.components.album.AlbumArt
 import com.example.aaos.music.core.ui.components.animation.slowBoundsTransform
 import com.example.aaos.music.core.ui.components.buttons.OutlinedMediaButton
 import com.example.aaos.music.core.ui.components.sliders.MusicProgressBar
+import com.example.aaos.music.core.ui.theme.gradientColors
 import com.example.aaos.music.ui.player.components.PlayerControls
 import com.example.aaos.music.ui.player.components.QueueList
 import com.example.aaos.music.ui.player.components.SongInfo
@@ -90,7 +91,12 @@ fun PlayerDashboardContent(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Transparent)
+            .background(brush = Brush.verticalGradient(
+                colors = listOf(
+                    MaterialTheme.gradientColors.start,
+                    MaterialTheme.gradientColors.end
+                )
+            ))
     ) {
 
         if (isLhd) {

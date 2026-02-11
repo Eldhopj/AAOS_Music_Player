@@ -66,7 +66,7 @@ fun QueueList(
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f), // Subtle border
+                color = MaterialTheme.colorScheme.outlineVariant, // Subtle border
                 shape = RoundedCornerShape(16.dp)
             ),
         color = Color.Transparent,
@@ -91,7 +91,7 @@ fun QueueList(
 
                 HorizontalDivider(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+                    color = MaterialTheme.colorScheme.outlineVariant
                 )
 
                 LazyColumn(
@@ -113,7 +113,7 @@ fun QueueList(
                         if (index < queue.lastIndex) {
                             HorizontalDivider(
                                 modifier = Modifier.padding(horizontal = 16.dp),
-                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.15f)
+                                color = MaterialTheme.colorScheme.outlineVariant
                             )
                         }
                     }
