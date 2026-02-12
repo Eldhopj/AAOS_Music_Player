@@ -20,7 +20,7 @@ val DarkSourceOutline = Color(0xFFD9D9D9)
 
 val LightGradientStart = Color(0xFFC2D8FF)
 val LightGradientEnd = Color(0xFF638EAC)
-val LightBackground = Color(0xFFF5F5F7) // Keep a neutral light background
+val LightBackground = Color(0xFF2F374C)
 val LightSurface = Color(0xFFFFFFFF)
 val LightOnBackground = Color(0xFF1A1A1A)
 val LightSurfaceVariant = Color(0xFFE1E2E4)
