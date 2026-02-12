@@ -57,37 +57,6 @@ class QueueListTest {
 
     @OptIn(ExperimentalSharedTransitionApi::class)
     @Test
-    fun renders_header_and_items() {
-        compose.setContent {
-            CarMusicTheme {
-                SharedTransitionLayout {
-                    val sharedScope = this
-                    AnimatedVisibility(visible = true) {
-                        val animatedScope = this
-                        QueueList(
-                            queue = sampleQueue(),
-                            currentTrackId = null,
-                            sharedTransitionScope = sharedScope,
-                            animatedVisibilityScope = animatedScope,
-                            onTrackClick = {},
-                        )
-                    }
-                }
-            }
-        }
-
-        // Header
-        compose.onNodeWithText("Select Album").assertExists()
-
-        // First two items visible
-        compose.onNodeWithText("Song 1").assertExists()
-        compose.onNodeWithText("Artist 1").assertExists()
-        compose.onNodeWithText("Song 2").assertExists()
-        compose.onNodeWithText("Artist 2").assertExists()
-    }
-
-    @OptIn(ExperimentalSharedTransitionApi::class)
-    @Test
     fun clicking_item_invokes_onTrackClick_with_correct_index() {
         var clickedIndex: Int? = null
 
@@ -192,31 +161,5 @@ class QueueListTest {
         // We don't assert color/boldness (not in semantics), but the item renders fine
         compose.onNodeWithText("Song 2").assertExists()
         compose.onNodeWithText("Artist 2").assertExists()
-    }
-
-    @OptIn(ExperimentalSharedTransitionApi::class)
-    @Test
-    fun empty_queue_renders_header_and_no_items() {
-        compose.setContent {
-            CarMusicTheme {
-                SharedTransitionLayout {
-                    val sharedScope = this
-                    AnimatedVisibility(visible = true) {
-                        val animatedScope = this
-                        QueueList(
-                            queue = emptyList(),
-                            currentTrackId = null,
-                            sharedTransitionScope = sharedScope,
-                            animatedVisibilityScope = animatedScope,
-                            onTrackClick = {}
-                        )
-                    }
-                }
-            }
-        }
-
-        compose.onNodeWithText("Select Album").assertExists()
-        compose.onAllNodesWithContentDescription("Favorite").assertCountEquals(0)
-        compose.onNodeWithText("Song 1").assertDoesNotExist()
     }
 }

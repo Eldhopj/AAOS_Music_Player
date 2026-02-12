@@ -6,7 +6,6 @@ import androidx.compose.ui.graphics.Color
 val GradientStart = Color(0xFF2F374C)
 val GradientEnd = Color(0xFF000000)
 val DarkBackground = GradientStart // Fallback to black
-val DarkSurface = Color(0x80000000) // Semi-transparent black for surface
 val DarkOnBackground = Color(0xFFFFFFFF)
 val DarkSurfaceVariant = Color(0xFF2F374C) // Matches GradientStart
 val DarkOnSurfaceVariant = Color(0xFFC4C7D0) // Light grey for text on variant
@@ -19,8 +18,8 @@ val DarkSourceOutline = Color(0xFFD9D9D9)
 
 // Light Theme Colors
 
-val LightGradientStart = Color(0xFFFFFFFF)
-val LightGradientEnd = Color(0xFF2F374C)
+val LightGradientStart = Color(0xFFC2D8FF)
+val LightGradientEnd = Color(0xFF638EAC)
 val LightBackground = Color(0xFFF5F5F7) // Keep a neutral light background
 val LightSurface = Color(0xFFFFFFFF)
 val LightOnBackground = Color(0xFF1A1A1A)

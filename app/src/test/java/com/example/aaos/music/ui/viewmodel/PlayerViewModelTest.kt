@@ -55,7 +55,7 @@ class PlayerViewModelTest {
         LocalSong(3L, "Song 3", "Artist 3", "Album 3", 200000L, "uri3", null)
     )
 
-    private val testTrack = Track("1", "Song 1", "Artist 1", "art1", 180000L)
+    private val testTrack = Track("1", "Song 1", "Artist 1", "art1", "180000L")
 
     @Before
     fun setup() {
