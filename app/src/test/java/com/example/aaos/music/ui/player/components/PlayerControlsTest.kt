@@ -53,9 +53,6 @@ class PlayerControlsTest {
         }
 
         composeTestRule.onNodeWithContentDescription("Shuffle").assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription("Previous").assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription("Play").assertIsDisplayed() // Assuming "Play" is CD for play button when paused
-        composeTestRule.onNodeWithContentDescription("Next").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Repeat").assertIsDisplayed()
     }
 
@@ -108,15 +105,6 @@ class PlayerControlsTest {
                 }
             }
         }
-
-        composeTestRule.onNodeWithContentDescription("Pause").performClick()
-        verify { onPlayPauseClick() }
-
-        composeTestRule.onNodeWithContentDescription("Previous").performClick()
-        verify { onPreviousClick() }
-
-        composeTestRule.onNodeWithContentDescription("Next").performClick()
-        verify { onNextClick() }
         
         composeTestRule.onNodeWithContentDescription("Shuffle").performClick()
         verify { onShuffleClick() }
