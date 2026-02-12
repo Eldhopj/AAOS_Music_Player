@@ -120,54 +120,7 @@ dependencies {
     testImplementation(libs.roborazzi.junit.rule)
 
 // Jacoco configuration for code coverage
-    tasks.register<JacocoReport>("jacocoTestReport") {
-        dependsOn("testDebugUnitTest")
 
-        reports {
-            xml.required.set(true)
-            html.required.set(true)
-            csv.required.set(false)
-        }
-
-        val fileFilter = listOf(
-            "**/R.class",
-            "**/R$*.class",
-            "**/BuildConfig.*",
-            "**/Manifest*.*",
-            "**/*Test*.*",
-            "android/**/*.*",
-            "**/*\$ViewInjector*.*",
-            "**/*\$ViewBinder*.*",
-            "**/databinding/*",
-            "**/android/databinding/*",
-            "**/androidx/databinding/*",
-            "**/di/module/*",
-            "**/*MapperImpl*.*",
-            "**/*\$Lambda$*.*",
-            "**/*Companion*.*",
-            "**/*Module.*",
-            "**/*Dagger*.*",
-            "**/*Hilt*.*",
-            "**/*MembersInjector*.*",
-            "**/*_Factory*.*",
-            "**/*_Provide*Factory*.*",
-            "**/*Extensions*.*",
-            "**/*\$Result.*",
-            "**/*\$Result$*.*"
-        )
-
-        val debugTree =
-            fileTree("${project.layout.buildDirectory.get().asFile}/tmp/kotlin-classes/debug") {
-                exclude(fileFilter)
-            }
-
-        val mainSrc = "${project.projectDir}/src/main/java"
-
-        sourceDirectories.setFrom(files(mainSrc))
-        classDirectories.setFrom(files(debugTree))
-        executionData.setFrom(fileTree(project.layout.buildDirectory.get().asFile) {
-            include("**/*.exec", "**/*.ec")
-        })
-    }
 
 }
+
