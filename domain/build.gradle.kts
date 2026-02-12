@@ -24,4 +24,10 @@ dependencies {
     implementation(libs.kotlin.coroutines.core)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    // Testing dependencies
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.truth)
 }

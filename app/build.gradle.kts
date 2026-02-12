@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.spotless) apply false
 }
 
 android {
@@ -21,6 +22,13 @@ android {
         compose = true
     }
 
+
+    buildTypes {
+        debug {
+            enableAndroidTestCoverage = true
+            enableUnitTestCoverage = true
+        }
+    }
 
     testOptions {
         unitTests {
@@ -66,6 +74,34 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     ksp(libs.hilt.compiler)
 
+    // Testing dependencies
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.truth)
+    testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.hilt.android.testing)
+    testImplementation(libs.robolectric)
+    kspTest(libs.hilt.compiler)
+    testImplementation(platform(libs.compose.bom))
+    debugImplementation(platform(libs.compose.bom))
+    testImplementation(libs.material3)
+    testImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.test.manifest)
+    testImplementation(libs.robolectric)
+
+    // Android Test dependencies
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
+
     testImplementation(platform(libs.compose.bom))
     debugImplementation(platform(libs.compose.bom))
     testImplementation(libs.material3)
@@ -79,4 +115,56 @@ dependencies {
 // Roborazzi (core + JUnit rule helpers)
     testImplementation(libs.roborazzi.compose)
     testImplementation(libs.roborazzi.junit.rule)
+
+// Jacoco configuration for code coverage
+    tasks.register<JacocoReport>("jacocoTestReport") {
+        dependsOn("testDebugUnitTest")
+
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+            csv.required.set(false)
+        }
+
+        val fileFilter = listOf(
+            "**/R.class",
+            "**/R$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/*Test*.*",
+            "android/**/*.*",
+            "**/*\$ViewInjector*.*",
+            "**/*\$ViewBinder*.*",
+            "**/databinding/*",
+            "**/android/databinding/*",
+            "**/androidx/databinding/*",
+            "**/di/module/*",
+            "**/*MapperImpl*.*",
+            "**/*\$Lambda$*.*",
+            "**/*Companion*.*",
+            "**/*Module.*",
+            "**/*Dagger*.*",
+            "**/*Hilt*.*",
+            "**/*MembersInjector*.*",
+            "**/*_Factory*.*",
+            "**/*_Provide*Factory*.*",
+            "**/*Extensions*.*",
+            "**/*\$Result.*",
+            "**/*\$Result$*.*"
+        )
+
+        val debugTree =
+            fileTree("${project.layout.buildDirectory.get().asFile}/tmp/kotlin-classes/debug") {
+                exclude(fileFilter)
+            }
+
+        val mainSrc = "${project.projectDir}/src/main/java"
+
+        sourceDirectories.setFrom(files(mainSrc))
+        classDirectories.setFrom(files(debugTree))
+        executionData.setFrom(fileTree(project.layout.buildDirectory.get().asFile) {
+            include("**/*.exec", "**/*.ec")
+        })
+    }
+
 }
