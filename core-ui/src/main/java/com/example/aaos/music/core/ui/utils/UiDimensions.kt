@@ -38,8 +38,8 @@ fun compresSize(small: Dp, medium: Dp) : Dp {
     return when {
         (sw in 817..1080) ->  small// 1920x1080
         (sw in 720..816) ->  medium // 2220x816
-        else -> 0
-    } as Dp
+        else -> 0.dp
+    }
 }
 
 @Composable
