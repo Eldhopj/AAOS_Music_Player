@@ -41,4 +41,13 @@ dependencies {
     testImplementation(libs.roborazzi.compose)
     testImplementation(libs.roborazzi.junit.rule)
     implementation(libs.coil.compose)
+
+    testImplementation(platform(libs.compose.bom))
+    debugImplementation(platform(libs.compose.bom))
+    testImplementation(libs.material3)
+
+    // Unit tests on JVM using Robolectric
+    testImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.test.manifest)
+    testImplementation(libs.robolectric)
 }

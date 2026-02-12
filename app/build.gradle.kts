@@ -22,6 +22,13 @@ android {
     }
 
 
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
+
 
     packaging {
         resources {
@@ -58,4 +65,18 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.androidx.datastore.preferences)
     ksp(libs.hilt.compiler)
+
+    testImplementation(platform(libs.compose.bom))
+    debugImplementation(platform(libs.compose.bom))
+    testImplementation(libs.material3)
+// Unit tests on JVM using Robolectric
+    testImplementation(libs.junit)
+    testImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.test.manifest)
+    testImplementation(libs.robolectric)
+
+
+// Roborazzi (core + JUnit rule helpers)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.junit.rule)
 }
